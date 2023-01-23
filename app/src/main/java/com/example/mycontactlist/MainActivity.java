@@ -33,6 +33,8 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View view) {
+
+                // Reference to current activity and what activity it should start
                 Intent intent = new Intent(MainActivity.this, ContactListActivity.class);
 
                 // Alert the operating system to not make multiple copies of the same activity
@@ -41,6 +43,18 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
+//    private void initListButton() {
+//
+//        ImageButton ibList = findViewById(R.id.imageButtonList);
+//        ibList.setOnClickListener(view -> {
+//            Intent intent = new Intent(MainActivity.this, ContactListActivity.class);
+//
+//            // Alert the operating system to not make multiple copies of the same activity
+//            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//            startActivity(intent);
+//        });
+//    }
 
     private void initMapButton() {
 
@@ -118,6 +132,5 @@ public class MainActivity extends AppCompatActivity {
             editName.requestFocus();
         }
     }
-
 
 }
