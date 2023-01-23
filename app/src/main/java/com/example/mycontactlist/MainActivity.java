@@ -14,6 +14,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         initListButton();
+        initMapButton();
+        initSettingsButton();
     }
 
     // Associate the ImageButton named imageButtonList on the activity_main layout
@@ -26,6 +28,38 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(MainActivity.this, ContactListActivity.class);
+
+                // Alert the operating system to not make multiple copies of the same activity
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+            }
+        });
+    }
+
+    private void initMapButton() {
+
+        ImageButton ibList = findViewById(R.id.imageButtonMap);
+        ibList.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, ContactMapActivity.class);
+
+                // Alert the operating system to not make multiple copies of the same activity
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+            }
+        });
+    }
+
+    private void initSettingsButton() {
+
+        ImageButton ibList = findViewById(R.id.imageButtonSettings);
+        ibList.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, ContactSettingsActivity.class);
 
                 // Alert the operating system to not make multiple copies of the same activity
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
