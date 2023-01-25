@@ -300,6 +300,7 @@
                 android:id="@+id/btnBirthday"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginRight="60dp"
                 android:layout_marginEnd="60dp"
                 android:backgroundTint="@color/red_saveButton"
                 android:text="Change"
