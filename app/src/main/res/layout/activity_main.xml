@@ -88,7 +88,7 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/toolbar"
-        app:layout_constraintVertical_bias="0.0">
+        app:layout_constraintVertical_bias="1.0">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -110,11 +110,11 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="8dp"
-                    android:ems="14"
-                    android:inputType="textPersonName"
-                    android:hint="Enter Name"
+                android:ems="14"
+                android:hint="Enter Name"
                 android:imeOptions="actionNext"
                 android:importantForAutofill="no"
+                android:inputType="textPersonName"
                 android:minHeight="48dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textContact"
@@ -141,13 +141,13 @@
                 android:layout_marginTop="8dp"
                 android:ems="16"
                 android:hint="Enter Street Address"
+                android:imeOptions="actionNext"
                 android:importantForAutofill="no"
                 android:inputType="textPersonName"
                 android:minHeight="48dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textAddress"
-                tools:ignore="TextContrastCheck"
-                android:imeOptions="actionNext"/>
+                tools:ignore="TextContrastCheck" />
 
             <EditText
                 android:id="@+id/editCity"
@@ -158,12 +158,12 @@
                 android:ems="9"
                 android:hint="City"
                 android:imeOptions="actionNext"
+                android:importantForAutofill="no"
                 android:inputType="textCapWords"
                 android:minHeight="48dp"
                 android:nextFocusDown="@+id/editState"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/editAddress"
-                android:importantForAutofill="no" />
+                app:layout_constraintTop_toBottomOf="@+id/editAddress" />
 
             <EditText
                 android:id="@+id/editState"
@@ -171,18 +171,18 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="2dp"
                 android:layout_marginTop="8dp"
-                    android:ems="2"
-                    android:hint="State"
-                    android:maxLength="2"
+                android:ems="2"
+                android:hint="State"
                 android:imeOptions="actionNext"
-                    android:inputType="textCapCharacters"
+                android:importantForAutofill="no"
+                android:inputType="textCapCharacters"
+                android:maxLength="2"
                 android:minWidth="48dp"
                 android:minHeight="48dp"
                 android:nextFocusDown="@+id/editZipcode"
                 app:layout_constraintStart_toEndOf="@+id/editCity"
                 app:layout_constraintTop_toBottomOf="@+id/editAddress"
-                tools:ignore="TextContrastCheck"
-                android:importantForAutofill="no" />
+                tools:ignore="TextContrastCheck" />
 
             <EditText
                 android:id="@+id/editZipcode"
@@ -190,17 +190,17 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="2dp"
                 android:layout_marginTop="8dp"
-                    android:ems="5"
-                    android:hint="Zipcode"
-                    android:maxLength="5"
+                android:ems="5"
+                android:hint="Zipcode"
                 android:imeOptions="actionNext"
-                    android:inputType="number"
+                android:importantForAutofill="no"
+                android:inputType="number"
+                android:maxLength="5"
                 android:minHeight="48dp"
                 android:nextFocusDown="@+id/editHome"
                 app:layout_constraintStart_toEndOf="@+id/editState"
                 app:layout_constraintTop_toBottomOf="@+id/editAddress"
-                tools:ignore="TextContrastCheck"
-                android:importantForAutofill="no" />
+                tools:ignore="TextContrastCheck" />
 
             <TextView
                 android:id="@+id/textHome"
@@ -254,11 +254,11 @@
 
             <TextView
                 android:id="@+id/textEMail"
-                android:text="Email Address:"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
+                android:text="Email Address:"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/editHome" />
 
@@ -278,30 +278,30 @@
 
             <TextView
                 android:id="@+id/textBday"
-                android:text="Birthday:"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="24dp"
+                android:text="Birthday:"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/editEMail"/>
+                app:layout_constraintTop_toBottomOf="@+id/editEMail" />
 
             <TextView
                 android:id="@+id/textBirthday"
-                android:text="01/01/1970"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="24dp"
+                android:text="01/01/1970"
                 app:layout_constraintStart_toEndOf="@+id/textBday"
-                app:layout_constraintTop_toBottomOf="@+id/editEMail"/>
+                app:layout_constraintTop_toBottomOf="@+id/editEMail" />
 
             <Button
                 android:id="@+id/btnBirthday"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="60dp"
                 android:layout_marginEnd="60dp"
+                android:layout_marginRight="60dp"
                 android:backgroundTint="@color/red_saveButton"
                 android:text="Change"
                 android:textColor="@color/black"

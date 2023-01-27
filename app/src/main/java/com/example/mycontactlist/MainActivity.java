@@ -20,6 +20,9 @@ AppCompatActivity: base class for activities that wish to use some of the newer 
 FragmentManager: class responsible for performing actions on your app's fragments, such as adding,
     removing, or replacing them, and adding them to the back stack.
 
+ScrollView: used to ensure that users can access all the data entry widgets, regardless of the size
+    of their device
+
 
  */
 
@@ -171,6 +174,7 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
 
                 // A new instance of the DatePickerDialog class is created
                 // DatePickerDialog extends DialogFragment
+                // Goes back to class with
                 DatePickerDialog datePickerDialog = new DatePickerDialog();
 
                 // Method displays dialog
