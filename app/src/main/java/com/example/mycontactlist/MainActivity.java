@@ -49,6 +49,7 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
         initChangeDateButton();
         currentContact = new Contact();
         initTextChangedEvents();
+        initSaveButton();
 
     }
 
@@ -154,10 +155,53 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
         });
     }
 
+    private void initSaveButton () {
+        Button saveButton = findViewById(R.id.buttonSave);
+
+        saveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                boolean wasSuccessful = false; // redundant
+                // Instantiated
+                ContactDataSource ds = new ContactDataSource(MainActivity.this);
+                try {
+                    ds.open();
+
+                    if (currentContact.getContactID() == -1)  {
+                        wasSuccessful = ds.insertContact(currentContact);
+
+                        if (wasSuccessful) {
+                            int newId = ds.getLastContactID();
+                            currentContact.setContactID(newId);
+                        }
+                    }
+                    else {
+                        wasSuccessful = ds.updateContact(currentContact);
+                    }
+
+                    ds.close();
+
+                } catch (Exception e) {
+                    wasSuccessful = false;
+                }
+
+                /* If the save operation was successful, the ToggleButton is toggled to viewing
+                    mode and the screen is set for viewing. If it was not successful, the
+                     activity remains in editing mode. */
+                if (wasSuccessful) {
+                    ToggleButton editToggle = findViewById(R.id.toggleButtonEdit);
+                    editToggle.toggle();
+                    setForEditing(false);
+                }
+            }
+        });
+    }
+
     /* Sets all the EditTexts to update the MainActivity's contact object with any
         changes users make as they implement them. */
     private void initTextChangedEvents() {
 
+        // Contact name
         // Declared as final bc it is used inside the event code
         final EditText etContactName = findViewById(R.id.editName);
 

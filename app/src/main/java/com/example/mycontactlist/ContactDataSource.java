@@ -3,6 +3,7 @@ package com.example.mycontactlist;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import java.sql.SQLException;
 
@@ -29,6 +30,7 @@ public class ContactDataSource {
         dbHelper.close();
     }
 
+    // Note: the database inserts the ID bc the _id field was declared as an autoincrement field
     public boolean insertContact(Contact c) {
         // Tells the calling code if the operation succeeded
         boolean didSucceed = false;
@@ -70,6 +72,7 @@ public class ContactDataSource {
         boolean didSucceed = false;
 
         try {
+
             Long rowId = (long) c.getContactID();
             ContentValues updateValues = new ContentValues();
 
@@ -91,6 +94,37 @@ public class ContactDataSource {
             // Do nothing -will return false if there is an exception
         }
         return didSucceed;
+    }
+
+    // Retrieves the new contact ID
+    public int getLastContactID() {
+        int lastId;
+        try {
+
+            /* Query is to get maximum value bc the last contact entered will have the max value
+            because the _id field is set to autoincrement. */
+            String query = "Select MAX (_id) from contact";
+
+            /* A cursor is declared and assigned to hold the results of the execution of the
+                query. A cursor is an object that is used to hold and move through the results
+                 of a query. */
+            Cursor cursor = database.rawQuery(query, null);
+
+            // The cursor is told to move to the first record in the returned data
+            cursor.moveToFirst();
+
+            /* The max ID is retrieved from the record set. Fields in the record set are indexed
+                starting at 0. */
+            lastId = cursor.getInt(0);
+
+
+            cursor.close();
+
+        } catch (Exception e) {
+            lastId = -1;
+        }
+
+        return lastId;
     }
 
 
