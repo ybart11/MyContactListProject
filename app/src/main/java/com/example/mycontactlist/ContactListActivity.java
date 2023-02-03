@@ -49,4 +49,14 @@ public class ContactListActivity extends AppCompatActivity {
             }
         });
     }
+
+    // "Be sure to disable the List button
+    private void initListButton() {
+
+        ImageButton ibList = findViewById(R.id.imageButtonList);
+        ibList.setEnabled(false);
+
+    }
+
+    // Enter Listing 6.3 Simple List Activation Code
 }
