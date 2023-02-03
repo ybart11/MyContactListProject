@@ -6,10 +6,15 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 /*
 this class purpose: Opens and closes the database and contains the queries used to store and
     retrieve data from the databse
+
+Cursor: Cursors are what contain the result set of a query made against a database in Android.
+    The Cursor class has an API that allows an app to read (in a type-safe manner) the columns that
+    were returned from the query as well as iterate over the rows of the result set.
  */
 
 public class ContactDataSource {
@@ -126,6 +131,35 @@ public class ContactDataSource {
 
         return lastId;
     }
+
+    // Method that will retrieve each contact's name
+    public ArrayList<String> getContactName () {
+        ArrayList <String> contactNames = new ArrayList<>();
+
+        try {
+            String query = "Select contactname from contact";
+
+            // Cursor object holds the result of the query
+            Cursor cursor = database.rawQuery(query, null);
+
+            /* A loop is set up to go through all the records in the cursor. The loop is
+                initialized by moving to the first record in the cursor. Next, the while loop
+                 is set up to test if the end of the cursor's record set has been reached.
+                 Forgetting the moveToNext() command will leave your method in an infinite loop
+                 because it will never reach the end of the record set. */
+            cursor.moveToFirst();
+            while (!cursor.isAfterLast()) {
+                contactNames.add(cursor.getString(0));
+                cursor.moveToNext();
+            }
+            cursor.close();
+        } catch (Exception e) {
+            contactNames = new ArrayList<>();
+        }
+
+        return contactNames;
+    }
+
 
 
 
