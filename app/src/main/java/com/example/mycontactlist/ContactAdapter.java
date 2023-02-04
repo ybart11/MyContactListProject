@@ -66,7 +66,7 @@ public class ContactAdapter extends RecyclerView.Adapter {
         cvh.getContactTextView().setText(contactData.get(position));
     }
 
-    // Used to determine how many times the other two methods need to be excuted
+    // Used to determine how many times the other two methods need to be executed
     // Returns the number of items in the data set
     @Override
     public int getItemCount() {
