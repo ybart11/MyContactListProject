@@ -3,7 +3,6 @@ package com.example.mycontactlist;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -13,6 +12,16 @@ import android.widget.Toast;
 import java.util.ArrayList;
 
 public class ContactListActivity extends AppCompatActivity {
+
+    private View.OnClickListener onItemClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            RecyclerView.ViewHolder viewHolder = (RecyclerView.ViewHolder) view.getTag();
+            int position = viewHolder.getAdapterPosition();
+            Intent intent = new Intent(ContactListActivity.this, MainActivity.class);
+            startActivity(intent);
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +52,8 @@ public class ContactListActivity extends AppCompatActivity {
 
             // Instantiates the ContactAdapter ojbect, passing it to the ArrayList of contact names
             ContactAdapter contactAdapter = new ContactAdapter(names);
+
+            contactAdapter.setOnItemClickListener(onItemClickListener);
 
             // Finally, this adapter (contactAdapter) is associated with the RecyclerView
             contactList.setAdapter(contactAdapter);

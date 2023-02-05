@@ -14,6 +14,10 @@ import java.util.ArrayList;
 public class ContactAdapter extends RecyclerView.Adapter {
     private ArrayList <String> contactData;
 
+    // Holds the OnClickListener object passed from the activity
+    private View.OnClickListener mOnItemClickListener;
+
+    // This inner class is pretty much like onCreate
     public class ContactViewHolder extends RecyclerView.ViewHolder {
 
         public TextView textViewContact;
@@ -23,6 +27,12 @@ public class ContactAdapter extends RecyclerView.Adapter {
         public ContactViewHolder(@NonNull View itemView) {
             super(itemView);
             textViewContact = itemView.findViewById(R.id.textViewName);
+
+            // Sets tag so we can identify which item was clicked
+            itemView.setTag(this);
+
+            // Sets the ViewHolder's OnClickListener to the listener passed from the activity
+            itemView.setOnClickListener(mOnItemClickListener);
         }
         // Will be used by the adapter to set and change the displayed text
         public TextView getContactTextView() {
@@ -35,13 +45,18 @@ public class ContactAdapter extends RecyclerView.Adapter {
         contactData = arrayList;
     }
 
+    public ContactAdapter () {}
 
-    /* -- Required methods for a RecyclerView.Adapter -- */
+    // Sets up an adapter method so that we can pass the listener from the activity to the adapter
+    public void setOnItemClickListener (View.OnClickListener itemClickListener) {
+        mOnItemClickListener = itemClickListener;
+    }
+
 
     /* Is called for each item in the data set to be displayed. Its job is to create the visual
         display for each item using the layout file created. For each item, a ViewHolder is
          created using the inflated XML and returned to the RecyclerView to be displayed
-         in the activity. */
+         in the activity. Gives layout for each of our rows. */
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -56,10 +71,11 @@ public class ContactAdapter extends RecyclerView.Adapter {
          getContactTextView method is called to set the text attribute of the TextView to the name
           of the contact at the current position in the data set. */
     // Called by the RecyclerView to display the data at the s position
+    // Tells Adapter to update data on each of our rows based on the RecyclerView position
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
 
-
+        // Change value within holder that is passed in
         ContactViewHolder cvh = (ContactViewHolder) holder;
 
         //
@@ -68,6 +84,7 @@ public class ContactAdapter extends RecyclerView.Adapter {
 
     // Used to determine how many times the other two methods need to be executed
     // Returns the number of items in the data set
+    // Wants to know how much data we have to display to the user
     @Override
     public int getItemCount() {
         return contactData.size();
