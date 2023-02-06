@@ -41,15 +41,18 @@ public class ContactListActivity extends AppCompatActivity {
         initSettingsButton();
         initAddContactButton();
         initDeleteSwitch();
+    }
 
-
+    @Override
+    public void onResume() {
+        super.onResume();
         String sortBy = getSharedPreferences("MyContactListPreferences",
                 Context.MODE_PRIVATE).getString("sortfield", "contactname");
         String sortOrder = getSharedPreferences("MyContactListPreferences",
                 Context.MODE_PRIVATE).getString("sortorder", "ASC");
+
         // Enter Listing 6.3 Simple List Activation Code
         ContactDataSource ds = new ContactDataSource(this);
-
 
         try {
             ds.open();
