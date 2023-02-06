@@ -11,11 +11,7 @@ import java.util.Calendar;
 
 /*
 this class purpose: Opens and closes the database and contains the queries used to store and
-    retrieve data from the databse
-
-Cursor: Cursors are what contain the result set of a query made against a database in Android.
-    The Cursor class has an API that allows an app to read (in a type-safe manner) the columns that
-    were returned from the query as well as iterate over the rows of the result set.
+    retrieve data from the database
  */
 
 public class ContactDataSource {
@@ -191,6 +187,35 @@ public class ContactDataSource {
         }
 
         return contacts;
+    }
+
+    // Retrieves a specific contact based on the contact's ID
+    public Contact getSpecificContact (int contactId){
+
+        Contact contact = new Contact();
+        String query = "SELECT * FROM contact where _id =" + contactId;
+        Cursor cursor = database.rawQuery(query, null);
+
+        /* The cursor moves to the first record returned. If a contact is found, the Contact
+            object is populated. If no contact was retrieved, the moveTofirst method will be false
+             and the contact will not be populated. */
+        if (cursor.moveToFirst()) {
+            contact.setContactID(cursor.getInt(0)); // first field
+            contact.setContactName(cursor.getString(1));
+            contact.setStreetAddress(cursor.getString(2));
+            contact.setCity(cursor.getString(3));
+            contact.setState(cursor.getString(4));
+            contact.setZipCode(cursor.getString(5));
+            contact.setPhoneNumber(cursor.getString(6));
+            contact.setCellNumber(cursor.getString(7));
+            contact.setEMail(cursor.getString(8));
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTimeInMillis(Long.valueOf(cursor.getString(9)));
+            contact.setBirthday(calendar);
+
+            cursor.close();
+        }
+        return contact;
     }
 
 

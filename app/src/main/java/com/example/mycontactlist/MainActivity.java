@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ToggleButton;
 import java.util.Calendar;
 
@@ -44,12 +45,22 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
         initListButton();
         initMapButton();
         initSettingsButton();
+
+        Bundle extras = getIntent().getExtras();
+        if (extras!= null) {
+            initContact(extras.getInt("contactID"));
+        }
+        else {
+            currentContact = new Contact();
+        }
+
         setForEditing(false);
         initToggleButton();
         initChangeDateButton();
-        currentContact = new Contact();
         initTextChangedEvents();
         initSaveButton();
+
+
 
     }
 
@@ -72,18 +83,6 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
             }
         });
     }
-
-//    private void initListButton() {
-//
-//        ImageButton ibList = findViewById(R.id.imageButtonList);
-//        ibList.setOnClickListener(view -> {
-//            Intent intent = new Intent(MainActivity.this, ContactListActivity.class);
-//
-//            // Alert the operating system to not make multiple copies of the same activity
-//            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-//            startActivity(intent);
-//        });
-//    }
 
     private void initMapButton() {
 
@@ -365,6 +364,45 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
         // Sets the phone number EditTexts to auto-format the number as it's typed
         etHome.addTextChangedListener( new PhoneNumberFormattingTextWatcher());
         etCell.addTextChangedListener( new PhoneNumberFormattingTextWatcher());
+
+    }
+
+    // Retrieves the contact and populates the layout with the values of the retrieved contact
+    private void initContact (int id) {
+        ContactDataSource ds = new ContactDataSource(MainActivity.this);
+        try {
+            ds.open();
+            currentContact = ds.getSpecificContact(id);
+            ds.close();
+
+        } catch (Exception e) {
+            Toast.makeText(this, "Load Contact Failed", Toast.LENGTH_LONG).show();
+        }
+
+
+        EditText editName = findViewById(R.id.editName);
+        EditText editAddress = findViewById(R.id.editAddress);
+        EditText editCity = findViewById(R.id.editCity);
+        EditText editState = findViewById(R.id.editState);
+        EditText editZipCode = findViewById(R.id.editZipcode);
+        EditText editPhone = findViewById(R.id.editHome);
+        EditText editCell = findViewById(R.id.editCell);
+        EditText editEmail = findViewById(R.id.editEMail);
+        TextView birthDay = findViewById(R.id.textBirthday);
+
+        editName.setText(currentContact.getContactName());
+        editAddress.setText(currentContact.getStreetAddress());
+        editCity.setText(currentContact.getCity());
+        editState.setText(currentContact.getState());
+        editCity.setText(currentContact.getCity());
+        editZipCode.setText(currentContact.getZipCode());
+        editPhone.setText(currentContact.getPhoneNumber());
+        editCell.setText(currentContact.getCellNumber());
+        editEmail.setText(currentContact.getEMail());
+        birthDay.setText(DateFormat.format("MM/dd/yyyy",
+                currentContact.getBirthday().getTimeInMillis()).toString());
+
+
 
     }
 
