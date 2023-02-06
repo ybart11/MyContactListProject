@@ -1,10 +1,13 @@
 package com.example.mycontactlist;
 
+import android.annotation.SuppressLint;
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -12,11 +15,24 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
+/*
+Context: Hover over class name for info. It allows us to access resources. It allows us to
+        interact with other Android components by sending messages. It gives you information
+        about your app environment.
+
+ */
+
 public class ContactAdapter extends RecyclerView.Adapter {
     private ArrayList <Contact> contactData;
 
     // Holds the OnClickListener object passed from the activity
     private View.OnClickListener mOnItemClickListener;
+
+    private boolean isDeleting;
+
+    /* Needed to open the database so the contact can be deleted and to display the message
+        if the deletion fails */
+    private Context parentContext;
 
     // This inner class is pretty much like onCreate
     public class ContactViewHolder extends RecyclerView.ViewHolder {
@@ -53,9 +69,9 @@ public class ContactAdapter extends RecyclerView.Adapter {
 
     }
 
-    // This constructor is used to associate data to be displayed with the adapter
-    public ContactAdapter (ArrayList<Contact> arrayList) {
+    public ContactAdapter (ArrayList<Contact> arrayList, Context context) {
         contactData = arrayList;
+        parentContext = context;
     }
 
     // Sets up an adapter method so that we can pass the listener from the activity to the adapter
@@ -77,12 +93,25 @@ public class ContactAdapter extends RecyclerView.Adapter {
     // Called by the RecyclerView to display the data at the s position
     // Tells Adapter to update data on each of our rows based on the RecyclerView position
     @Override
-    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder,
+                                 @SuppressLint("RecyclerView") final int position) {
 
         // Change value within holder that is passed in
         ContactViewHolder cvh = (ContactViewHolder) holder;
         cvh.getContactTextView().setText(contactData.get(position).getContactName());
         cvh.getPhoneTextView().setText(contactData.get(position).getPhoneNumber());
+        if (isDeleting) {
+            cvh.getDeleteButton().setVisibility(View.VISIBLE);
+            cvh.getDeleteButton().setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    deleteItem(position); // replace with holder.getHolderPosition
+                }
+            });
+        }
+        else {
+            cvh.getDeleteButton().setVisibility(View.INVISIBLE);
+        }
     }
 
     // Used to determine how many times the other two methods need to be executed
@@ -92,4 +121,33 @@ public class ContactAdapter extends RecyclerView.Adapter {
     public int getItemCount() {
         return contactData.size();
     }
+
+
+    private void deleteItem (int position) {
+        Contact contact = contactData.get(position);
+        ContactDataSource ds = new ContactDataSource(parentContext);
+        try {
+            ds.open();
+            boolean didDelete = ds.deleteContact(contact.getContactID());
+            ds.close();
+
+            if (didDelete) {
+                contactData.remove(position);
+                notifyDataSetChanged(); // refresh display
+                Toast.makeText(parentContext, "Delete Success!", Toast.LENGTH_LONG).show();
+            }
+            else {
+                Toast.makeText(parentContext, "Delete Failed!", Toast.LENGTH_LONG).show();
+            }
+        }
+        catch (Exception e) {
+            Toast.makeText(parentContext, "Delete Failed!", Toast.LENGTH_LONG).show();
+        }
+    }
+
+    // A setter since the isDeleting is private
+    public void setDelete (boolean b) {
+        isDeleting = b;
+    }
+
 }

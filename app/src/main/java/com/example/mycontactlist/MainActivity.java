@@ -170,6 +170,8 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
                         wasSuccessful = ds.insertContact(currentContact);
 
                         if (wasSuccessful) {
+                            Toast.makeText(MainActivity.this, "Successfully saved!",
+                                    Toast.LENGTH_LONG).show();
                             int newId = ds.getLastContactID();
                             currentContact.setContactID(newId);
                         }

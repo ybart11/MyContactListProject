@@ -218,6 +218,19 @@ public class ContactDataSource {
         return contact;
     }
 
+    // Method to delete a contact using ID
+    public boolean deleteContact (int contactId) {
+        boolean didDelete = false;
+        try {
+            didDelete = database.delete("contact", "_id=" + contactId,
+                    null) > 0;
+        } catch (Exception e) {
+            // Do nothing -return value already set to false
+        }
+
+        return didDelete;
+    }
+
 
 
 
