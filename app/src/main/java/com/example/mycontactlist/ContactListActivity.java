@@ -13,12 +13,16 @@ import java.util.ArrayList;
 
 public class ContactListActivity extends AppCompatActivity {
 
+    ArrayList <Contact> contacts;
+
     private View.OnClickListener onItemClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
             RecyclerView.ViewHolder viewHolder = (RecyclerView.ViewHolder) view.getTag();
             int position = viewHolder.getAdapterPosition();
+            int contactId = contacts.get(position).getContactID();
             Intent intent = new Intent(ContactListActivity.this, MainActivity.class);
+            intent.putExtra("contactID", contactId);
             startActivity(intent);
         }
     };
@@ -33,11 +37,10 @@ public class ContactListActivity extends AppCompatActivity {
 
         // Enter Listing 6.3 Simple List Activation Code
         ContactDataSource ds = new ContactDataSource(this);
-        ArrayList <String> names;
 
         try {
             ds.open();
-            names = ds.getContactName();
+            contacts = ds.getContacts();
             ds.close();
 
             // Set up the RecyclerView to display the data
@@ -50,14 +53,13 @@ public class ContactListActivity extends AppCompatActivity {
             // Associate LayoutManager with the RecyclerView
             contactList.setLayoutManager(layoutManager);
 
-            // Instantiates the ContactAdapter ojbect, passing it to the ArrayList of contact names
-            ContactAdapter contactAdapter = new ContactAdapter(names);
+            // Instantiates the ContactAdapter object
+            ContactAdapter contactAdapter = new ContactAdapter(contacts);
 
             contactAdapter.setOnItemClickListener(onItemClickListener);
 
             // Finally, this adapter (contactAdapter) is associated with the RecyclerView
             contactList.setAdapter(contactAdapter);
-
 
         } catch (Exception e) {
 
