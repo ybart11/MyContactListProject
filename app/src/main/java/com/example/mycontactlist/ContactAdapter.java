@@ -53,10 +53,7 @@ public class ContactAdapter extends RecyclerView.Adapter {
     }
 
 
-    /* Is called for each item in the data set to be displayed. Its job is to create the visual
-        display for each item using the layout file created. For each item, a ViewHolder is
-         created using the inflated XML and returned to the RecyclerView to be displayed
-         in the activity. Gives layout for each of our rows. */
+    //  Gives layout for each of our rows.
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -66,10 +63,6 @@ public class ContactAdapter extends RecyclerView.Adapter {
         return new ContactViewHolder(v);
     }
 
-    /* It is passed to the ViewHolder created by the onCreateViewHolder method as a generic
-        ViewHolder. This is then cast into the associated ContactViewHolder, and the classes
-         getContactTextView method is called to set the text attribute of the TextView to the name
-          of the contact at the current position in the data set. */
     // Called by the RecyclerView to display the data at the s position
     // Tells Adapter to update data on each of our rows based on the RecyclerView position
     @Override
