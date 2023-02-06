@@ -3,6 +3,8 @@ package com.example.mycontactlist;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -41,13 +43,17 @@ public class ContactListActivity extends AppCompatActivity {
         initDeleteSwitch();
 
 
+        String sortBy = getSharedPreferences("MyContactListPreferences",
+                Context.MODE_PRIVATE).getString("sortfield", "contactname");
+        String sortOrder = getSharedPreferences("MyContactListPreferences",
+                Context.MODE_PRIVATE).getString("sortorder", "ASC");
         // Enter Listing 6.3 Simple List Activation Code
         ContactDataSource ds = new ContactDataSource(this);
 
 
         try {
             ds.open();
-            contacts = ds.getContacts();
+            contacts = ds.getContacts(sortBy, sortOrder);
             ds.close();
 
             // Set up the RecyclerView to display the data
