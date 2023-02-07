@@ -20,6 +20,7 @@ public class ContactListActivity extends AppCompatActivity {
 
     ArrayList <Contact> contacts;
     ContactAdapter contactAdapter;
+    RecyclerView contactList;
 
     private View.OnClickListener onItemClickListener = new View.OnClickListener() {
         @Override
@@ -59,28 +60,31 @@ public class ContactListActivity extends AppCompatActivity {
             contacts = ds.getContacts(sortBy, sortOrder);
             ds.close();
 
-            // Set up the RecyclerView to display the data
-            RecyclerView contactList = findViewById(R.id.rvContacts);
+            if (contacts.size() > 0) {
+                // Set up the RecyclerView to display the data
+                contactList = findViewById(R.id.rvContacts);
 
-            // Creates an instance of the LayoutManager used to display the individual items
-            // Use LinearLayoutManager to display a vertical scrolling list
-            RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
+                // Creates an instance of the LayoutManager used to display the individual items
+                // Use LinearLayoutManager to display a vertical scrolling list
+                RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
 
-            // Associate LayoutManager with the RecyclerView
-            contactList.setLayoutManager(layoutManager);
+                // Associate LayoutManager with the RecyclerView
+                contactList.setLayoutManager(layoutManager);
 
-            // Instantiates the ContactAdapter object
-            contactAdapter = new ContactAdapter(contacts, this);
+                // Instantiates the ContactAdapter object
+                contactAdapter = new ContactAdapter(contacts, this);
 
+                // When user clicks a contact, it opens MainActivity
+                contactAdapter.setOnItemClickListener(onItemClickListener);
 
-            // When user clicks a contact, it opens MainActivity
-            contactAdapter.setOnItemClickListener(onItemClickListener);
-
-            // Finally, this adapter (contactAdapter) is associated with the RecyclerView
-            contactList.setAdapter(contactAdapter);
-
+                // Finally, this adapter (contactAdapter) is associated with the RecyclerView
+                contactList.setAdapter(contactAdapter);
+            } else {
+                Intent intent = new Intent(ContactListActivity.this,
+                        MainActivity.class);
+                startActivity(intent);
+            }
         } catch (Exception e) {
-
             /* First parameter indicates where the message should display. In this case, we want
                 it in the current activity (this). */
             Toast.makeText(this, "Error retrieving contacts",
@@ -137,7 +141,8 @@ public class ContactListActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(ContactListActivity.this, ContactSettingsActivity.class);
+                Intent intent = new Intent(ContactListActivity.this,
+                        ContactSettingsActivity.class);
 
                 // Alert the operating system to not make multiple copies of the same activity
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
