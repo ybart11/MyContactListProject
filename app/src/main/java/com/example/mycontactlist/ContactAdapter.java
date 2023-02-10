@@ -2,6 +2,7 @@ package com.example.mycontactlist;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +13,8 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 
@@ -39,6 +42,10 @@ public class ContactAdapter extends RecyclerView.Adapter {
 
         public TextView textViewContact;
         public TextView textPhone;
+        public TextView textAddress;
+        public TextView textCity;
+        public TextView textState;
+        public TextView textZipcode;
         public Button deleteButton;
 
         /* @NonNull indicates that the parameter cannot contain a null value or, if it's before
@@ -48,12 +55,18 @@ public class ContactAdapter extends RecyclerView.Adapter {
             textViewContact = itemView.findViewById(R.id.textContactName);
             textPhone = itemView.findViewById(R.id.textPhoneNumber);
             deleteButton = itemView.findViewById(R.id.buttonDeleteContact);
+            textAddress = itemView.findViewById(R.id.text_Address);
+            textCity = itemView.findViewById(R.id.text_City);
+            textState = itemView.findViewById(R.id.text_State);
+            textZipcode = itemView.findViewById(R.id.text_zipcode);
+
             // Sets tag so we can identify which item was clicked
             itemView.setTag(this);
 
             // Sets the ViewHolder's OnClickListener to the listener passed from the activity
             itemView.setOnClickListener(mOnItemClickListener);
         }
+
         // Will be used by the adapter to set and change the displayed text
         public TextView getContactTextView() {
             return textViewContact;
@@ -66,6 +79,24 @@ public class ContactAdapter extends RecyclerView.Adapter {
         public Button getDeleteButton() {
             return deleteButton;
         }
+
+        public TextView getAddressTextView() {
+            return textAddress;
+        }
+
+        public TextView getCityTextView () {
+            return textCity;
+        }
+
+        public TextView getStateTextView() {
+            return textState;
+        }
+
+        public TextView getZipcodeTextView() {
+            return textZipcode;
+        }
+
+
 
     }
 
@@ -86,7 +117,7 @@ public class ContactAdapter extends RecyclerView.Adapter {
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item,
-                                                            parent, false);
+                parent, false);
         return new ContactViewHolder(v);
     }
 
@@ -100,6 +131,11 @@ public class ContactAdapter extends RecyclerView.Adapter {
         ContactViewHolder cvh = (ContactViewHolder) holder;
         cvh.getContactTextView().setText(contactData.get(position).getContactName());
         cvh.getPhoneTextView().setText(contactData.get(position).getPhoneNumber());
+        cvh.getAddressTextView().setText(contactData.get(position).getStreetAddress() + ",");
+        cvh.getCityTextView().setText(contactData.get(position).getCity() + ",");
+        cvh.getStateTextView().setText(contactData.get(position).getState() + ",");
+        cvh.getZipcodeTextView().setText(contactData.get(position).getZipCode());
+
         if (isDeleting) {
             cvh.getDeleteButton().setVisibility(View.VISIBLE);
             cvh.getDeleteButton().setOnClickListener(new View.OnClickListener() {
@@ -111,6 +147,22 @@ public class ContactAdapter extends RecyclerView.Adapter {
         }
         else {
             cvh.getDeleteButton().setVisibility(View.INVISIBLE);
+        }
+
+        if(position % 3 == 0) // Checks if position is even
+        {
+            ((ContactViewHolder) holder).textViewContact.
+                    setTextColor(Color.parseColor("#FF0000")); // red
+
+        }
+        else if (position % 2 == 0) {
+            ((ContactViewHolder) holder).textViewContact.
+                    setTextColor(Color.parseColor("#00FF00")); // green
+        }
+        else
+        {
+            ((ContactViewHolder) holder).textViewContact.
+                    setTextColor(Color.parseColor("#0000FF")); // blue
         }
     }
 

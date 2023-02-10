@@ -6,6 +6,88 @@
     android:layout_height="match_parent"
     tools:context=".ContactMapActivity">
 
+    <TextView
+        android:id="@+id/textViewMapAddress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="16dp"
+        android:text="Address:"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/editTextMapAddress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginLeft="24dp"
+        android:layout_marginTop="8dp"
+        android:ems="16"
+        android:hint="Enter Street Address"
+        android:inputType="textPersonName"
+        android:minHeight="48dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textViewMapAddress" />
+
+    <EditText
+        android:id="@+id/editTextMapCity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginLeft="24dp"
+        android:layout_marginTop="8dp"
+        android:ems="9"
+        android:hint="City"
+        android:inputType="textPersonName"
+        android:minHeight="48dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editTextMapAddress" />
+
+    <EditText
+        android:id="@+id/editTextMapState"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="2dp"
+        android:layout_marginLeft="2dp"
+        android:layout_marginTop="8dp"
+        android:ems="2"
+        android:hint="State"
+        android:inputType="textCapWords"
+        android:maxLength="2"
+        android:minWidth="48dp"
+        android:minHeight="48dp"
+        app:layout_constraintStart_toEndOf="@+id/editTextMapCity"
+        app:layout_constraintTop_toBottomOf="@+id/editTextMapAddress" />
+
+
+    <EditText
+        android:id="@+id/editTextMapZipcode"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="2dp"
+        android:layout_marginLeft="2dp"
+        android:layout_marginTop="8dp"
+        android:ems="5"
+        android:hint="Zipcode"
+        android:inputType="number"
+        android:maxLength="5"
+        android:minHeight="48dp"
+        app:layout_constraintStart_toEndOf="@+id/editTextMapState"
+        app:layout_constraintTop_toBottomOf="@+id/editTextMapAddress" />
+
+    <Button
+        android:id="@+id/buttonGetLocation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginLeft="24dp"
+        android:layout_marginTop="32dp"
+        android:text="Get Coordinates"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editTextMapCity" />
+
     <LinearLayout
         android:id="@+id/linearLayout3"
         android:layout_width="0dp"
@@ -45,12 +127,70 @@
     </LinearLayout>
 
     <TextView
-        android:id="@+id/textViewContactMapTesting"
+        android:id="@+id/textViewTitleLatitude"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Contact Map"
-        app:layout_constraintBottom_toTopOf="@+id/linearLayout3"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="40dp"
+        android:text="Latitude:"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/buttonGetLocation" />
+
+    <TextView
+        android:id="@+id/textViewTitleLongitude"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="16dp"
+        android:text="Longitude:"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textViewTitleLatitude" />
+
+    <TextView
+        android:id="@+id/textViewTitleAccuracy"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="16dp"
+        android:text="Accuracy:"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textViewTitleLongitude" />
+
+    <TextView
+        android:id="@+id/textLatitude"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="30dp"
+        android:layout_marginLeft="30dp"
+        android:text="None"
+        app:layout_constraintBottom_toBottomOf="@+id/textViewTitleLatitude"
+        app:layout_constraintStart_toEndOf="@+id/textViewTitleLatitude"
+        app:layout_constraintTop_toTopOf="@+id/textViewTitleLatitude" />
+
+    <TextView
+        android:id="@+id/textLongitude"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="19dp"
+        android:layout_marginLeft="19dp"
+        android:text="None"
+        app:layout_constraintBottom_toBottomOf="@+id/textViewTitleLongitude"
+        app:layout_constraintStart_toEndOf="@+id/textViewTitleLongitude"
+        app:layout_constraintTop_toTopOf="@+id/textViewTitleLongitude"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <TextView
+        android:id="@+id/textAccuracy"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginLeft="24dp"
+        android:text="None"
+        app:layout_constraintBottom_toBottomOf="@+id/textViewTitleAccuracy"
+        app:layout_constraintStart_toEndOf="@+id/textViewTitleAccuracy"
+        app:layout_constraintTop_toTopOf="@+id/textViewTitleAccuracy" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
