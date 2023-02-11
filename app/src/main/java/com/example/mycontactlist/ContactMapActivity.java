@@ -1,20 +1,31 @@
 package com.example.mycontactlist;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.location.Address;
 import android.location.Geocoder;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import org.w3c.dom.Text;
 
 import java.util.List;
 
 public class ContactMapActivity extends AppCompatActivity {
+
+    LocationManager locationManager;
+    LocationListener gpsListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,40 +36,59 @@ public class ContactMapActivity extends AppCompatActivity {
         initGetLocationButton();
     }
 
+    // Stops the sensors if the Activity's life-cycle state changes
+    public void onPause () {
+        super.onPause();
+        try {
+
+            // Ends listening to the gpsListener
+            locationManager.removeUpdates(gpsListener);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     private void initGetLocationButton () {
         Button locationButton = (Button) findViewById(R.id.buttonGetLocation);
         locationButton.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View view) {
-                EditText editAddress  = (EditText) findViewById(R.id.editTextMapAddress);
-                EditText editCity = (EditText) findViewById(R.id.editTextMapCity);
-                EditText editState = (EditText) findViewById(R.id.editTextMapState);
-                EditText editZipCode = (EditText) findViewById(R.id.editTextMapZipcode);
-
-                // Proper format for Geocoder
-                String address = editAddress.getText().toString() + ", " +
-                                    editCity.getText().toString() + ", " +
-                                    editState.getText().toString() + ", " +
-                                    editZipCode.getText().toString();
-
-                List <Address> addresses = null;
-                Geocoder geo = new Geocoder(ContactMapActivity.this);
-
                 try {
-                    addresses = geo.getFromLocationName(address, 1);
+
+                    // getBaseContext is used to get the root context, the Activity
+                    locationManager = (LocationManager) getBaseContext().
+                            getSystemService(Context.LOCATION_SERVICE);
+
+                    gpsListener = new LocationListener() {
+
+                        @Override
+                        /* When a location change is detected, is it reported to this method
+                            as a location object */
+                        public void onLocationChanged(@NonNull Location location) {
+                            TextView txtLatitude = (TextView) findViewById(R.id.textLatitude);
+                            TextView txtLongitude = (TextView) findViewById(R.id.textLongitude);
+                            TextView txtAccuracy = (TextView) findViewById(R.id.textAccuracy);
+                            txtLatitude.setText(String.valueOf(location.getLatitude()));
+                            txtLongitude.setText(String.valueOf(location.getLongitude()));
+                            txtAccuracy.setText(String.valueOf(location.getAccuracy()));
+                        }
+
+                        // Required by LocationListener in addition to onLocationChanged
+                        // Generally used to alert the app that the sensor status has changed
+                        public void onStatusChanged (String provider, int status, Bundle extras){}
+                        public void onProviderEnabled(String provider) {}
+                        public void onProviderDisabled(String provider) {}
+                    };
+
+                    // sent the message requestLocationUpdates to begin listening to location changes
+                    locationManager.requestLocationUpdates(
+                            LocationManager.GPS_PROVIDER, 0, 0, gpsListener);
+
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    Toast.makeText(getBaseContext(), "Error, Location not available",
+                            Toast.LENGTH_LONG).show();
                 }
-
-                /* The latitude and longitude of the first address in the returned list are
-                    displayed in the appropriate TextView widgets*/
-                TextView txtLatitude = (TextView) findViewById(R.id.textLatitude);
-                TextView txtLongitude = (TextView) findViewById(R.id.textLongitude);
-
-                txtLatitude.setText(String.valueOf(addresses.get(0).getLatitude()));
-                txtLongitude.setText(String.valueOf(addresses.get(0).getLongitude()));
-
             }
         });
 
