@@ -27,6 +27,8 @@ public class ContactMapActivity extends AppCompatActivity {
 
     LocationManager locationManager;
     LocationListener gpsListener;
+    LocationListener networkListener;
+    Location currentBestLocation;
     // Declares a constant that is used to identify the permission that is being requested
     final int PERMISSION_REQUEST_LOCATION = 101;
 
@@ -56,6 +58,7 @@ public class ContactMapActivity extends AppCompatActivity {
         try {
             // Ends listening to the gpsListener
             locationManager.removeUpdates(gpsListener);
+            locationManager.removeUpdates(networkListener);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -147,9 +150,32 @@ public class ContactMapActivity extends AppCompatActivity {
                 public void onProviderDisabled(String provider) {}
             };
 
+            networkListener = new LocationListener() {
+
+                @Override
+                        /* When a location change is detected, is it reported to this method
+                            as a location object */
+                public void onLocationChanged(@NonNull Location location) {
+                    TextView txtLatitude = (TextView) findViewById(R.id.textLatitude);
+                    TextView txtLongitude = (TextView) findViewById(R.id.textLongitude);
+                    TextView txtAccuracy = (TextView) findViewById(R.id.textAccuracy);
+                    txtLatitude.setText(String.valueOf(location.getLatitude()));
+                    txtLongitude.setText(String.valueOf(location.getLongitude()));
+                    txtAccuracy.setText(String.valueOf(location.getAccuracy()));
+                }
+
+                // Required by LocationListener in addition to onLocationChanged
+                // Generally used to alert the app that the sensor status has changed
+                public void onStatusChanged (String provider, int status, Bundle extras){}
+                public void onProviderEnabled(String provider) {}
+                public void onProviderDisabled(String provider) {}
+            };
+
             // sent the message requestLocationUpdates to begin listening to location changes
             locationManager.requestLocationUpdates(
                     LocationManager.GPS_PROVIDER, 0, 0, gpsListener);
+            locationManager.requestLocationUpdates(
+                    LocationManager.NETWORK_PROVIDER, 0, 0, networkListener);
 
         } catch (Exception e) {
             Toast.makeText(getBaseContext(), "Error, Location not available",
@@ -176,6 +202,8 @@ public class ContactMapActivity extends AppCompatActivity {
             }
         }
     }
+
+    // Takes the current location and compares it to a new location to determine
 
     // Associate the ImageButton named imageButtonList on the activity_main layout
     // with the code that is executed when it is pressed
