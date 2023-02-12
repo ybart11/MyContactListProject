@@ -141,6 +141,10 @@ public class ContactMapActivity extends AppCompatActivity {
                     txtLatitude.setText(String.valueOf(location.getLatitude()));
                     txtLongitude.setText(String.valueOf(location.getLongitude()));
                     txtAccuracy.setText(String.valueOf(location.getAccuracy()));
+
+                    if (isBetterLocation(location)) {
+                        currentBestLocation = location;
+                    }
                 }
 
                 // Required by LocationListener in addition to onLocationChanged
@@ -162,6 +166,10 @@ public class ContactMapActivity extends AppCompatActivity {
                     txtLatitude.setText(String.valueOf(location.getLatitude()));
                     txtLongitude.setText(String.valueOf(location.getLongitude()));
                     txtAccuracy.setText(String.valueOf(location.getAccuracy()));
+
+                    if (isBetterLocation(location)) {
+                        currentBestLocation = location;
+                    }
                 }
 
                 // Required by LocationListener in addition to onLocationChanged
@@ -203,7 +211,24 @@ public class ContactMapActivity extends AppCompatActivity {
         }
     }
 
-    // Takes the current location and compares it to a new location to determine
+    // Takes the current location and compares it to a new location to determine if it is better
+    private boolean isBetterLocation (Location location) {
+        boolean isBetter = false;
+
+        // New location better if no existing location
+        if (currentBestLocation == null) {
+            isBetter = true;
+        }
+        // Checks if new location has better accuracy
+        else if (location.getAccuracy() <= currentBestLocation.getAccuracy()) {
+            isBetter = true;
+        }
+        // Checks if new location is newer by 5 min
+        else if (location.getTime() - currentBestLocation.getTime() > 5*60*1000) {
+            isBetter = true;
+        }
+        return isBetter;
+    }
 
     // Associate the ImageButton named imageButtonList on the activity_main layout
     // with the code that is executed when it is pressed
