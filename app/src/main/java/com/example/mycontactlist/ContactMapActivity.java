@@ -20,6 +20,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageButton;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -73,6 +75,8 @@ public class ContactMapActivity extends AppCompatActivity implements OnMapReadyC
             } else {
                 contacts = ds.getContacts("contactname", "ASC");
             }
+
+            ds.close();
         } catch (Exception e) {
             Toast.makeText(this, "Contact(s) could not be retrieved.",
                     Toast.LENGTH_LONG).show();
@@ -92,6 +96,7 @@ public class ContactMapActivity extends AppCompatActivity implements OnMapReadyC
 
         initListButton();
         initSettingsButton();
+        initMapTypeButtons();
     }
 
     // Stops the sensors if the Activity's life-cycle state changes
@@ -379,6 +384,23 @@ public class ContactMapActivity extends AppCompatActivity implements OnMapReadyC
                 }
             }
         }
+    }
+
+    // RadioButton code
+    private void initMapTypeButtons() {
+        RadioGroup rgMagType = findViewById(R.id.radioGroupMapType);
+        rgMagType.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup radioGroup, int i) {
+                RadioButton rbNormal = findViewById(R.id.radioButtonNormal);
+                if (rbNormal.isChecked()) {
+                    gMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+                }
+                else {
+                    gMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
+                }
+            }
+        });
     }
 
     // Associate the ImageButton named imageButtonList on the activity_main layout
