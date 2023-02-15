@@ -178,6 +178,8 @@ public class ContactMapActivity extends AppCompatActivity implements OnMapReadyC
         int measureWidth = size.x;
         int measureHeight = size.y;
 
+        /* If the contact's ArrayList contains Contact objects, the Activity loops through them,
+            adding each one to the map. */
         if (contacts.size() > 0) {
             LatLngBounds.Builder builder = new LatLngBounds.Builder();
             for (int i = 0; i < contacts.size(); i++) {
@@ -208,6 +210,11 @@ public class ContactMapActivity extends AppCompatActivity implements OnMapReadyC
                     measureWidth, measureHeight, 450));
         }
         else {
+
+            /* Else if the ArrayList does not contain any objects, the code checks whether there is
+            a single Contact object to map. If there is, the address is retrieved and a LatLng
+             object is instantiated for the contact's coordinates; the Latlng object is used to add
+             a marker to the map. */
             if (currentContact != null) {
                 Geocoder geo = new Geocoder(this);
                 List<Address> addresses = null;
