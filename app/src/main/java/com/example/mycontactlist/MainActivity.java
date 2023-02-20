@@ -47,7 +47,7 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
         initSettingsButton();
 
         Bundle extras = getIntent().getExtras();
-        if (extras!= null) {
+        if (extras != null) {
             initContact(extras.getInt("contactID"));
         }
         else {
