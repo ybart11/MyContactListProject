@@ -118,6 +118,7 @@
                 android:inputType="textPersonName"
                 android:minHeight="48dp"
                 app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/imageContact"
                 app:layout_constraintTop_toBottomOf="@+id/textContact"
                 tools:ignore="TextContrastCheck">
 
@@ -302,12 +303,21 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="60dp"
-                android:layout_marginRight="60dp"
                 android:backgroundTint="@color/red_saveButton"
                 android:text="Change"
-                android:textColor="@color/black"
+                android:textColor="#000000"
                 app:layout_constraintBaseline_toBaselineOf="@+id/textBirthday"
                 app:layout_constraintEnd_toEndOf="parent" />
+
+            <ImageButton
+                android:id="@+id/imageContact"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/textContact"
+                app:srcCompat="@drawable/photoicon"
+                tools:ignore="SpeakableTextPresentCheck" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
