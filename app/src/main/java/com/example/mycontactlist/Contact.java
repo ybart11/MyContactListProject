@@ -1,5 +1,7 @@
 package com.example.mycontactlist;
 
+import android.graphics.Bitmap;
+
 import java.util.Calendar;
 
 public class Contact {
@@ -14,6 +16,7 @@ public class Contact {
     private String cellNumber;
     private String eMail;
     private Calendar birthday;
+    private Bitmap picture;
 
     /* -1 used to determine if the contact is new and needs to be inserted or already exists
         and needs to be updated */
@@ -103,5 +106,13 @@ public class Contact {
 
     public void setBirthday(Calendar birthday) {
         this.birthday = birthday;
+    }
+
+    public Bitmap getPicture() {
+        return picture;
+    }
+
+    public void setPicture(Bitmap picture) {
+        this.picture = picture;
     }
 }

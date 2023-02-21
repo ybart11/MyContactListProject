@@ -8,9 +8,11 @@ import androidx.fragment.app.FragmentManager;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.telephony.PhoneNumberFormattingTextWatcher;
 import android.text.Editable;
 import android.text.InputType;
@@ -50,6 +52,8 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
     // Associate between the MainActivity class and a Contact object
     private Contact currentContact;
     final int PERMISSION_REQUEST_PHONE = 102;
+    final int PERMISSION_REQUEST_CAMERA = 103;
+    final int CAMERA_REQUEST = 1888;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,6 +77,7 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
         initTextChangedEvents();
         initSaveButton();
         initCallFunction();
+        initImageButton();
 
 
 
@@ -447,6 +452,8 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
         Button buttonChange = findViewById(R.id.btnBirthday);
         Button buttonSave = findViewById(R.id.buttonSave);
 
+        ImageButton picture = findViewById(R.id.imageContact);
+
 
         editName.setEnabled(enabled);
         editAddress.setEnabled(enabled);
@@ -457,6 +464,8 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
         editEmail.setEnabled(enabled);
         buttonChange.setEnabled(enabled);
         buttonSave.setEnabled(enabled);
+
+        picture.setEnabled(enabled);
 
         if (enabled) {
             editName.requestFocus();
@@ -561,6 +570,18 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
                             "from this app", Toast.LENGTH_LONG).show();
                 }
             }
+            // Handles the request for permission to access the camera
+            case PERMISSION_REQUEST_CAMERA: {
+                if (grantResults.length > 0 && grantResults [0] ==
+                    PackageManager.PERMISSION_GRANTED) {
+                    takePhoto();
+                }
+                else {
+                    Toast.makeText(MainActivity.this, "You will not be able to save" +
+                            "contact pictures from this app.", Toast.LENGTH_LONG).show();
+                }
+                return;
+            }
         }
     }
 
@@ -581,5 +602,69 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
             startActivity(intent);
         }
     }
+
+    // ImageButton initialization and handle permission on newer Android OS
+    private void initImageButton() {
+        ImageButton ib = findViewById(R.id.imageContact);
+        ib.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (Build.VERSION.SDK_INT >= 23) {
+                    if (ContextCompat.checkSelfPermission(MainActivity.this,
+                            Manifest.permission.CAMERA) !=
+                            PackageManager.PERMISSION_GRANTED) {
+                        if (ActivityCompat.shouldShowRequestPermissionRationale
+                                (MainActivity.this, Manifest.permission.CAMERA)) {
+                            Snackbar.make(findViewById(R.id.activity_main),
+                                    "The app needs permission to take pictures.",
+                                    Snackbar.LENGTH_INDEFINITE)
+                                    .setAction("OK", new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View view) {
+                                            ActivityCompat.requestPermissions
+                                                    (MainActivity.this, new String[]
+                                                            { Manifest.permission.CAMERA },
+                                                            PERMISSION_REQUEST_CAMERA);
+                                        }
+                                    })
+                                    .show();
+                        } else {
+                            ActivityCompat.requestPermissions(MainActivity.this,
+                                    new String[] {Manifest.permission.CAMERA},
+                                    PERMISSION_REQUEST_CAMERA);
+                        }
+                    }
+                    else {
+                        takePhoto();
+                    }
+                } else {
+                    takePhoto();
+                }
+            }
+        });
+    }
+
+    public void takePhoto() {
+        Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        startActivityForResult(cameraIntent, CAMERA_REQUEST);
+    }
+
+    protected void onActivityResult (int requestCode, int resultCode, Intent data) {
+        // Checked to see if it is the one sent to the camera
+        if (requestCode == CAMERA_REQUEST) {
+            // Check if the camera returned with a picture
+            if (resultCode == RESULT_OK) {
+
+                // Doesn't specify a type of data to get from extras, so must be cast
+                Bitmap photo = (Bitmap)data.getExtras().get("data");
+                Bitmap scaledPhoto = Bitmap.createScaledBitmap(photo, 144,
+                        144, true);
+                ImageButton imageContact = findViewById(R.id.imageContact);
+                imageContact.setImageBitmap(scaledPhoto);
+                currentContact.setPicture(scaledPhoto);
+            }
+        }
+    }
+
 
 }
