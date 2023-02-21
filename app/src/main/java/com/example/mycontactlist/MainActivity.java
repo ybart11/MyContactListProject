@@ -649,14 +649,16 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
         startActivityForResult(cameraIntent, CAMERA_REQUEST);
     }
 
+    @Override
     protected void onActivityResult (int requestCode, int resultCode, Intent data) {
         // Checked to see if it is the one sent to the camera
+        super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == CAMERA_REQUEST) {
             // Check if the camera returned with a picture
             if (resultCode == RESULT_OK) {
 
                 // Doesn't specify a type of data to get from extras, so must be cast
-                Bitmap photo = (Bitmap)data.getExtras().get("data");
+                Bitmap photo = (Bitmap) data.getExtras().get("data");
                 Bitmap scaledPhoto = Bitmap.createScaledBitmap(photo, 144,
                         144, true);
                 ImageButton imageContact = findViewById(R.id.imageContact);
