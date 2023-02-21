@@ -7,10 +7,15 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Point;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -22,6 +27,7 @@ import android.view.WindowManager;
 import android.widget.ImageButton;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -47,6 +53,8 @@ FusedLocationProviderClient: provides the functionality needed to get the GPS co
 OnMapReadyCallBack interface: is used to notify the activity that the map has been downloaded and
     is ready to be used
 
+SensorManager: a system service. You get a reference to it rather than instantiate it.
+
  */
 
 
@@ -61,10 +69,31 @@ public class ContactMapActivity extends AppCompatActivity implements OnMapReadyC
     ArrayList <Contact> contacts = new ArrayList<>();
     Contact currentContact = null;
 
+    SensorManager sensorManager;
+    Sensor accelerometer;
+    Sensor magnetometer;
+    TextView textDirection;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contact_map);
+
+        // Registering Sensors for Monitoring
+        sensorManager = (SensorManager)getSystemService(Context.SENSOR_SERVICE);
+        accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        magnetometer = sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
+
+        // Test whether sensor is available
+        if (accelerometer != null && magnetometer != null) {
+            sensorManager.registerListener(mySensorEventListener, accelerometer,
+                    SensorManager.SENSOR_DELAY_FASTEST);
+            sensorManager.registerListener(mySensorEventListener, magnetometer,
+                    SensorManager.SENSOR_DELAY_FASTEST);
+        } else {
+            Toast.makeText(this, "Sensors not found", Toast.LENGTH_LONG).show();
+        }
+            textDirection = (TextView) findViewById(R.id.textHeading);
 
         Bundle extras = getIntent().getExtras();
         try {
@@ -113,6 +142,50 @@ public class ContactMapActivity extends AppCompatActivity implements OnMapReadyC
             return;
         }
     }
+
+    // Class that handles the actual events from the sensors and takes action on them
+    private SensorEventListener mySensorEventListener = new SensorEventListener() {
+        @Override
+        public void onAccuracyChanged(Sensor sensor, int accuracy) {}
+
+            // Sensor readings are returned as a float array
+            float[] accelerometerValues;
+            float[] magneticValues;
+
+        @Override
+        public void onSensorChanged(SensorEvent event) {
+            if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER)
+                accelerometerValues = event.values;
+            if (event.sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD)
+                magneticValues = event.values;
+            if (accelerometerValues != null && magneticValues != null) {
+                float R[] = new float[9];
+                float I[] = new float[9];
+
+                boolean success = SensorManager.getRotationMatrix(R, I,
+                        accelerometerValues, magneticValues);
+
+                /* If the matrices are successfully calculated, the SensorManager is asked to
+                    calculate the orientation of the device. Three dimensions. */
+                if (success) {
+                    float[] orientation = new float[3];
+                    SensorManager.getOrientation(R, orientation);
+
+                    float azimut = (float) Math.toDegrees(orientation[0]);
+
+                    if (azimut < 0.0f) { azimut += 360.0f; } // eliminate negative numbers
+
+                    // Use degree heading to get text description
+                    String direction;
+                    if (azimut >= 315 || azimut < 45) { direction = "N"; }
+                    else if (azimut >= 225 && azimut < 315) { direction = "W"; }
+                    else if (azimut >= 135 && azimut < 225) { direction = "S"; }
+                    else { direction = "E"; }
+                    textDirection.setText(direction);
+                }
+            }
+        }
+    };
 
     private void createLocationRequest () {
 
@@ -255,8 +328,6 @@ public class ContactMapActivity extends AppCompatActivity implements OnMapReadyC
             }
         }
 
-
-
         // Permission check
         try{
             if (Build.VERSION.SDK_INT >= 23) {
@@ -296,75 +367,6 @@ public class ContactMapActivity extends AppCompatActivity implements OnMapReadyC
                     Toast.LENGTH_LONG).show();
         }
     }
-
-
-//        try {
-//
-//            // getBaseContext is used to get the root context, the Activity
-//            locationManager = (LocationManager) getBaseContext().
-//                    getSystemService(Context.LOCATION_SERVICE);
-//
-//            gpsListener = new LocationListener() {
-//
-//                @Override
-//                        /* When a location change is detected, is it reported to this method
-//                            as a location object */
-//                public void onLocationChanged(@NonNull Location location) {
-//                    TextView txtLatitude = (TextView) findViewById(R.id.textLatitude);
-//                    TextView txtLongitude = (TextView) findViewById(R.id.textLongitude);
-//                    TextView txtAccuracy = (TextView) findViewById(R.id.textAccuracy);
-//                    txtLatitude.setText(String.valueOf(location.getLatitude()));
-//                    txtLongitude.setText(String.valueOf(location.getLongitude()));
-//                    txtAccuracy.setText(String.valueOf(location.getAccuracy()));
-//
-//                    if (isBetterLocation(location)) {
-//                        currentBestLocation = location;
-//                    }
-//                }
-//
-//                // Required by LocationListener in addition to onLocationChanged
-//                // Generally used to alert the app that the sensor status has changed
-//                public void onStatusChanged (String provider, int status, Bundle extras){}
-//                public void onProviderEnabled(String provider) {}
-//                public void onProviderDisabled(String provider) {}
-//            };
-//
-//            networkListener = new LocationListener() {
-//
-//                @Override
-//                        /* When a location change is detected, is it reported to this method
-//                            as a location object */
-//                public void onLocationChanged(@NonNull Location location) {
-//                    TextView txtLatitude = (TextView) findViewById(R.id.textLatitude);
-//                    TextView txtLongitude = (TextView) findViewById(R.id.textLongitude);
-//                    TextView txtAccuracy = (TextView) findViewById(R.id.textAccuracy);
-//                    txtLatitude.setText(String.valueOf(location.getLatitude()));
-//                    txtLongitude.setText(String.valueOf(location.getLongitude()));
-//                    txtAccuracy.setText(String.valueOf(location.getAccuracy()));
-//
-//                    if (isBetterLocation(location)) {
-//                        currentBestLocation = location;
-//                    }
-//                }
-//
-//                // Required by LocationListener in addition to onLocationChanged
-//                // Generally used to alert the app that the sensor status has changed
-//                public void onStatusChanged (String provider, int status, Bundle extras){}
-//                public void onProviderEnabled(String provider) {}
-//                public void onProviderDisabled(String provider) {}
-//            };
-//
-//            // sent the message requestLocationUpdates to begin listening to location changes
-//            locationManager.requestLocationUpdates(
-//                    LocationManager.GPS_PROVIDER, 0, 0, gpsListener);
-//            locationManager.requestLocationUpdates(
-//                    LocationManager.NETWORK_PROVIDER, 0, 0, networkListener);
-//
-//        } catch (Exception e) {
-//            Toast.makeText(getBaseContext(), "Error, Location not available",
-//                    Toast.LENGTH_LONG).show();
-//        }
-//    }
 
     @Override
     // Required to respond to the user's response
