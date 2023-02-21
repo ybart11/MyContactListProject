@@ -1,11 +1,19 @@
 package com.example.mycontactlist;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentManager;
+
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.telephony.PhoneNumberFormattingTextWatcher;
 import android.text.Editable;
+import android.text.InputType;
 import android.text.TextWatcher;
 import android.text.format.DateFormat;
 import android.view.View;
@@ -15,6 +23,10 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
+
+import com.google.android.material.snackbar.Snackbar;
+
+import java.net.URI;
 import java.util.Calendar;
 
 /*
@@ -37,6 +49,7 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
 
     // Associate between the MainActivity class and a Contact object
     private Contact currentContact;
+    final int PERMISSION_REQUEST_PHONE = 102;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +72,7 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
         initChangeDateButton();
         initTextChangedEvents();
         initSaveButton();
+        initCallFunction();
 
 
 
@@ -439,14 +453,19 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
         editCity.setEnabled(enabled);
         editState.setEnabled(enabled);
         editZipCode.setEnabled(enabled);
-        editPhone.setEnabled(enabled);
-        editCell.setEnabled(enabled);
+
         editEmail.setEnabled(enabled);
         buttonChange.setEnabled(enabled);
         buttonSave.setEnabled(enabled);
 
         if (enabled) {
             editName.requestFocus();
+            editPhone.setInputType(InputType.TYPE_CLASS_PHONE);
+            editCell.setInputType(InputType.TYPE_CLASS_PHONE);
+        }
+        else {
+            editPhone.setInputType(InputType.TYPE_NULL);
+            editCell.setInputType(InputType.TYPE_NULL);
         }
     }
 
@@ -464,6 +483,103 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
             in the custom dialog to the currentContact object. */
         currentContact.setBirthday(selectedTime);
 
+    }
+
+    // Listener to the phone number EditTexts for the press-and-hold user action
+    private void initCallFunction() {
+        EditText editPhone = findViewById(R.id.editHome);
+        editPhone.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                checkPhonePermission(currentContact.getPhoneNumber());
+                return false;
+            }
+        });
+
+        EditText editCell = (EditText) findViewById(R.id.editCell);
+        editCell.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                checkPhonePermission(currentContact.getCellNumber());
+                return false;
+            }
+        });
+    }
+
+    private void checkPhonePermission (String phoneNumber) {
+        if (Build.VERSION.SDK_INT >= 23) {
+            if (ContextCompat.checkSelfPermission(MainActivity.this,
+                    Manifest.permission.CALL_PHONE) !=
+                    PackageManager.PERMISSION_GRANTED) {
+                if (ActivityCompat.shouldShowRequestPermissionRationale(
+                        MainActivity.this,
+                        Manifest.permission.CALL_PHONE)) {
+
+                    Snackbar.make(findViewById(R.id.activity_main),
+                                    "MyContactList requires this permission to place" +
+                                            "a call from the app.", Snackbar.LENGTH_INDEFINITE)
+                            .setAction("OK", new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    ActivityCompat.requestPermissions(
+                                            MainActivity.this,
+                                            new String[] {Manifest.permission.CALL_PHONE},
+                                            PERMISSION_REQUEST_PHONE);
+                                }
+                            })
+                            .show();
+                } else {
+                    ActivityCompat.requestPermissions(MainActivity.this, new
+                                    String[] {Manifest.permission.CALL_PHONE},
+                            PERMISSION_REQUEST_PHONE);
+                }
+            } else {
+                callContact(phoneNumber);
+            }
+        } else {
+            callContact(phoneNumber);
+        }
+    }
+
+    @Override
+    // Required to respond to the user's response
+    public void onRequestPermissionsResult (int requestCode,
+                                            String[] permissions, int [] grantResults) {
+
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode) {
+            case PERMISSION_REQUEST_PHONE: {
+                if (grantResults.length > 0 &&
+                        grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    Toast.makeText(MainActivity.this,
+                            "You may now call from this app.",
+                            Toast.LENGTH_LONG).show();
+
+                } else {
+                    Toast.makeText(MainActivity.this,
+                            "You will not be able to make calls " +
+                            "from this app", Toast.LENGTH_LONG).show();
+                }
+            }
+        }
+    }
+
+    // Method that actually dials the phone number
+    private void callContact (String phoneNumber) {
+
+        // Tells android you want to use the phone to make a call
+        Intent intent = new Intent(Intent.ACTION_CALL);
+
+        // URI is used to identify a local resource
+        intent.setData(Uri.parse("tel:" + phoneNumber));
+        if ( Build.VERSION.SDK_INT >= 23 &&
+                ContextCompat.checkSelfPermission(getBaseContext(),
+                        Manifest.permission.CALL_PHONE) !=
+                        PackageManager.PERMISSION_GRANTED) {
+            return ;
+        } else {
+            startActivity(intent);
+        }
     }
 
 }
