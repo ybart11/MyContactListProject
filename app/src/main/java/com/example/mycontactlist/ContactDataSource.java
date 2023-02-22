@@ -5,6 +5,11 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -55,6 +60,14 @@ public class ContactDataSource {
             // Store as millis because SQLite doesn't support storing data as dates directly
             initialValues.put("birthday", String.valueOf(c.getBirthday().getTimeInMillis()));
 
+            // Inserting a picture to the database
+            if (c.getPicture() != null) {
+                ByteArrayOutputStream boas = new ByteArrayOutputStream();
+                c.getPicture().compress(Bitmap.CompressFormat.PNG, 100, boas);
+                byte[] photo = boas.toByteArray();
+                initialValues.put("contactphoto", photo);
+            }
+
             /* The method returns the number of records (rows) successfully inserted. The value
                 is compared to zero. If it is greater than zero, then the operation succeeded
                  and the return value is set to true. */
@@ -87,6 +100,14 @@ public class ContactDataSource {
             updateValues.put("cellnumber", c.getCellNumber());
             updateValues.put("email", c.getEMail());
             updateValues.put("birthday", String.valueOf(c.getBirthday().getTimeInMillis()));
+
+            // Updating a picture to the database
+            if (c.getPicture() != null) {
+                ByteArrayOutputStream boas = new ByteArrayOutputStream();
+                c.getPicture().compress(Bitmap.CompressFormat.PNG, 100, boas);
+                byte[] photo = boas.toByteArray();
+                updateValues.put("contactphoto", photo);
+            }
 
             // The database's update method is called to place the changes in the database
             didSucceed = database.update("contact", updateValues,
@@ -212,6 +233,14 @@ public class ContactDataSource {
             Calendar calendar = Calendar.getInstance();
             calendar.setTimeInMillis(Long.valueOf(cursor.getString(9)));
             contact.setBirthday(calendar);
+
+            // Getting a picture from the database
+            byte [] photo = cursor.getBlob(10);
+            if (photo != null) {
+                ByteArrayInputStream imageStream = new ByteArrayInputStream(photo);
+                Bitmap thePictures = BitmapFactory.decodeStream(imageStream);
+                contact.setPicture(thePictures);
+            }
 
             cursor.close();
         }

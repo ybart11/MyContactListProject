@@ -432,6 +432,14 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
         birthDay.setText(DateFormat.format("MM/dd/yyyy",
                 currentContact.getBirthday().getTimeInMillis()).toString());
 
+        ImageButton picture = findViewById(R.id.imageContact);
+        if (currentContact.getPicture() != null) {
+            picture.setImageBitmap(currentContact.getPicture());
+        }
+        else {
+            picture.setImageResource(R.drawable.photoicon);
+        }
+
 
 
     }
