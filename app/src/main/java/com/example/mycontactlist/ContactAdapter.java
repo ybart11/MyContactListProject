@@ -149,6 +149,8 @@ public class ContactAdapter extends RecyclerView.Adapter {
             cvh.getDeleteButton().setVisibility(View.INVISIBLE);
         }
 
+        // Here is where you should add code to change the color of the contact names
+
     }
 
     // Used to determine how many times the other two methods need to be executed
