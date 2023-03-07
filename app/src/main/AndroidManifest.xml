@@ -63,7 +63,7 @@
         </activity>
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="" />
+            android:value="AIzaSyA6t2Ow0QRN_Wv1Ih8eTWgwTvqQO50pJzw" />
 
         <uses-library
             android:name="org.apache.http.legacy"

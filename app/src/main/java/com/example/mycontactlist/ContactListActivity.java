@@ -32,6 +32,7 @@ public class ContactListActivity extends AppCompatActivity {
     RecyclerView contactList;
 
     private View.OnClickListener onItemClickListener = new View.OnClickListener() {
+
         @Override
         public void onClick(View view) {
             RecyclerView.ViewHolder viewHolder = (RecyclerView.ViewHolder) view.getTag();
