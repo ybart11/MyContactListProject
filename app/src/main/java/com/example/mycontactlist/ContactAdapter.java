@@ -150,6 +150,21 @@ public class ContactAdapter extends RecyclerView.Adapter {
         }
 
         // Here is where you should add code to change the color of the contact names
+        if(position % 3 == 0) // Checks if position is even
+        {
+            ((ContactViewHolder) holder).textViewContact.
+                    setTextColor(Color.parseColor("#FF0000")); // red
+
+        }
+        else if (position % 2 == 0) {
+            ((ContactViewHolder) holder).textViewContact.
+                    setTextColor(Color.parseColor("#00FF00")); // green
+        }
+        else
+        {
+            ((ContactViewHolder) holder).textViewContact.
+                    setTextColor(Color.parseColor("#0000FF")); // blue
+        }
 
     }
 
